@@ -23,27 +23,32 @@ class YU():
 
         academic_year = "2021-22"
 
-        department_url = self.Department_Page_Url + "?query=&department= " + department_id + "&year=" + academic_year #+ "&max="+"500"+"&offset=0"
+        department_url = self.Department_Page_Url + "?query=&department= " + department_id + "&year=" + academic_year
 
         department_course_len = self.get_courseList_len(department_url)
 
-        department_url += "&max="+ department_course_len +"&offset=0"
+        department_url += "&max=" + department_course_len + "&offset=0"
 
         department_page_content = requests.get(department_url).text
         department_soup = BeautifulSoup(department_page_content, 'html.parser')
 
-        courses = department_soup.find("table", {"id": "modules"}).find_all("tr")
-        # remove table header
-        courses.pop(0)
+        courses_module = department_soup.find("table", {"id": "modules"})
 
-        return courses, department_url
+        if courses_module is not None:
+            courses = courses_module.find_all("tr")
+            # remove table header
+            courses.pop(0)
+            return courses, department_url
+
+        return None, ""
 
     def get_courseList_len(self, department_url):
 
         department_page_content = requests.get(department_url).text
         department_soup = BeautifulSoup(department_page_content, 'html.parser')
 
-        department_records_len = department_soup.find('div', {'class': 'pagination'}).find_all('a', {'class': 'step'})[-1].text
+        department_records_len = department_soup.find('div', {'class': 'pagination'}).find_all('a', {'class': 'step'})[
+            -1].text
 
         return department_records_len
 
@@ -103,12 +108,11 @@ class YU():
         # get department's course
 
         for department in departments_with_id:
-
             department_id = departments_with_id[department]
             Department_Name = department
 
             courses, department_url = self.get_courses_of_department(department_id)
-
+            Course_Homepage = department_url
             # get course's data
             for course in courses:
                 Course_Title, Unit_Count, Objective, Outcome, Professor, Required_Skills, Description = self.get_course_data(
@@ -122,7 +126,7 @@ class YU():
 
             logger.info(f"{self.Abbreviation}: {Department_Name} department's data was crawled successfully.")
 
-        logger.info(f"{self.Abbreviation}: Total {self.course_count} courses were crawled successfully.")
+            logger.info(f"{self.Abbreviation}: Total {self.course_count} courses were crawled successfully.")
 
 
 y = YU()
