@@ -6,10 +6,10 @@ import logging
 logger = logging.getLogger('__main__')
 
 
-class UOY(BaseCrawler):
+class UoY(BaseCrawler):
     Department_Page_Url = "https://www.york.ac.uk/students/studying/manage/programmes/module-catalogue/module"
     University = "University of York"
-    Abbreviation = "UOY"
+    Abbreviation = "UoY"
     University_Homepage = "https://www.york.ac.uk/"
 
     # Below fields didn't find in the website
@@ -147,5 +147,5 @@ class UOY(BaseCrawler):
         return cleaned_str
 
 
-y = UOY()
+y = UoY()
 y.handler()
