@@ -102,8 +102,6 @@ class UoY(BaseCrawler):
         html_content = requests.get(self.Department_Page_Url).text
         soup = BeautifulSoup(html_content, 'html.parser')
 
-        departments = soup.find(id='department')
-
         # get department list with id
         departments_with_id = {}
 
